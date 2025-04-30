@@ -1,0 +1,1 @@
+python train.py --data data/water_nj.yaml --out_dir out/weights  --arct FuseNet --img_sz 256 --opti adamw --lr 0.0001 --epochs 2 --save_period 2  
