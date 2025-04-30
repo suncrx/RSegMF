@@ -23,8 +23,14 @@ class FuseNet(nn.Module):
 
         # Load pre-trained VGG-16 weights to two separate variables.
         # They will be used in defining the depth and RGB encoder sequential layers.
-        feats = list(models.vgg16(pretrained=True).features.children())
-        feats2 = list(models.vgg16(pretrained=True).features.children())
+        
+        # deprecated
+        #feats = list(models.vgg16(pretrained=True).features.children())
+        #feats2 = list(models.vgg16(pretrained=True).features.children())
+
+        feats = list(models.vgg16(weights=models.VGG16_Weights.DEFAULT).features.children())
+        feats2 = list(models.vgg16(weights=models.VGG16_Weights.DEFAULT).features.children())
+        
 
         # Average the first layer of feats variable, the input-layer weights of VGG-16,
         # over the channel dimension, as depth encoder will be accepting one-dimensional

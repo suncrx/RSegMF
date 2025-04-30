@@ -34,7 +34,7 @@ def parse_opt():
     parser.add_argument('--out_dir', type=str, default='',
                         help='training output path')
      
-    parser.add_argument('--arct', type=str, default='FuseNet'   #'GFUNet', 'MFSegNet'
+    parser.add_argument('--arct', type=str, default='FuseNet',   #'GFUNet', 'MFSegNet'
                         help='model architecture (options:GFUNet, GFBUNet, FuseNet, v_Fusenet, CMGFNet, MFSegNet')
 
     parser.add_argument('--epochs', type=int, default=5)
@@ -122,7 +122,8 @@ def run(opt):
     
     # prepare model from pretrained vgg16
     model = nets.create_model(arct, n_classes = n_classes, 
-                                pretrained_weight_path='pretrained_weight/vgg16_bn-6c64b313.pth')    
+                              #pretrained_weight_path='pretrained_weight/vgg16_bn-6c64b313.pth',
+                              )    
     #print(arct)
     
     
@@ -229,3 +230,4 @@ if __name__ == '__main__':
     opt = parse_opt()
     print(opt)
     run(opt)
+
