@@ -6,8 +6,10 @@ Created on Mon Oct  7 16:42:00 2024
 
 Segmentation network for multiple spectral RS images
 
+multiple-modal fusion segmentation network
 
 """
+
 import torch
 import torchvision
 from torch import nn
@@ -15,6 +17,7 @@ from torch.nn import functional as F
 
 from . import resnet_enc 
 #import resnet_enc
+
 
 class MFSegNet(nn.Module):
     def __init__(self, img_channels=3, aux_channels=1, 
@@ -25,8 +28,10 @@ class MFSegNet(nn.Module):
         
         # image encoder part        
         self.img_encoder = resnet_enc.resnet34_enc(in_channels=img_channels)
+
         # auxiliary data encoder part
         self.aux_encoder = resnet_enc.resnet34_enc(in_channels=aux_channels)
+
         
         self.avgConv = nn.Conv2d(in_channels=128, out_channels=1, 
                                  kernel_size=3, padding=1)

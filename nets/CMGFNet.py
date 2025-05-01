@@ -1,5 +1,6 @@
 '''
-CMGFNet:
+CMGFNet: cross-modal gated fusion network
+
     REF:
     Hosseinpour, Hamidreza, Farhad Samadzadegan, and Farzaneh Dadrass Javan. 
 2022. CMGFNet: A deep cross-modal gated fusion network for building 
@@ -63,7 +64,7 @@ class depthwise_separable_conv(nn.Module):
         return out
 
 
-
+# This is R-DSC (residual depth separable convolution) block
 class decoder_block(nn.Module):
     def __init__(self,
                  input_channels,
@@ -274,7 +275,7 @@ class CMGFNet(nn.Module):
 
         ##########################################################
 
-        FG = torch.cat((x2_side  ,out_rgb4),dim=1)      
+        FG = torch.cat((x2_side, out_rgb4),dim=1)      
         out_rgb5 = self.dconv2_rgb(FG)   
        
         FG_cross = self.gate2(x2_side , y2_side )
@@ -286,7 +287,7 @@ class CMGFNet(nn.Module):
         FG = torch.cat((x1_side ,out_rgb5),dim=1)      
         out_rgb6 = self.dconv1_rgb(FG)   
 
-        FG_cross = self.gate1(x1_side , y1_side)
+        FG_cross = self.gate1(x1_side, y1_side)
         FG_dsm = torch.cat((FG_cross, out_dsm5),dim=1)  
         out_dsm6 = self.dconv1_cross(FG_dsm) 
 

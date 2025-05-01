@@ -31,7 +31,7 @@ class Block(Module):
         return self.conv2(self.relu(self.conv1(x)))
 
 
-
+# depthwise separable convolution
 class depthwise_separable_conv(Module):
     def __init__(self, nin, nout, kernel_size=3, padding=1):
         super(depthwise_separable_conv, self).__init__()
@@ -44,6 +44,7 @@ class depthwise_separable_conv(Module):
         return out
 
 
+# residual depthwise separable module
 class decoder_block(Module):
     def __init__(self,
                  input_channels,
@@ -75,7 +76,7 @@ class decoder_block(Module):
         return out
 
 
-
+# gated fusion module
 class Gated_Fusion(Module):
     def __init__(self, in_channels):
         super().__init__()
@@ -93,6 +94,7 @@ class Gated_Fusion(Module):
         FG = y * (1 - G)
 
         return self.conv(torch.cat([FG, PG], dim=1))
+
 
 
 class Encoder(Module):
@@ -118,6 +120,7 @@ class Encoder(Module):
         return blockOutputs
 
 
+# gated decoder
 class GDecoder(Module):
     def __init__(self, channels=(256, 128, 64, 32, 16)):
         super().__init__()
@@ -167,10 +170,7 @@ class Decoder(Module):
     def crop(self, encFeatures, x):
         # grab the dimensions of the inputs, and crop the encoder features to match the dimensions
         (_, _, H, W) = x.shape
-
-
         encFeatures = CenterCrop([H, W])(encFeatures)
-
         # return the cropped features
         return encFeatures
 
@@ -190,6 +190,7 @@ class Decoder(Module):
         return x
 
 
+# Gated fusion Unet network
 class GFUNet(Module):
     def __init__(self, imgChannels=(3, 16, 32, 64, 128, 256), 
                  dsmChannels=(1, 16, 32, 64, 128, 256),
@@ -238,15 +239,15 @@ class GFUNet(Module):
         decFeatures = self.finalGate(imgdecFeatures, dsmdecFeatures)
 
         # pass the decoder features through the regression head to obtain the segmentation mask
-        map = self.head(decFeatures)
+        mapf = self.head(decFeatures)
 
         # check to see if we are retaining the original output dimensions and if so,
         # then resize the output to match them
         if self.retainDim:
-            map = F.interpolate(map, self.outSize)
+            mapf = F.interpolate(mapf, self.outSize)
 
         # return the segmentation map
-        return map
+        return mapf
 
 
 if __name__ == "__main__":
