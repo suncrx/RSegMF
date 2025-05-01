@@ -17,12 +17,14 @@ of Selected Topics in Applied Earth Observations and Remote Sensing 15:3463-74.
        
 '''
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+The network does not work!!!!!!!!!!!!
+
 """
 
 import torch
 import torch.nn as nn
 #from utils import network_parameters
-from thop import profile
 #from model.block import SAB, CAB, PAB, conv, SAM, conv3x3, conv_down
 
 
@@ -348,6 +350,8 @@ class CMFNet(nn.Module):
 
 if __name__ == "__main__":
     import time
+    from thop import profile
+
     model = CMFNet(in_c=3, out_c=1)
 
     for idx, m in enumerate(model.modules()):

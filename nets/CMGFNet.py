@@ -19,7 +19,7 @@ import torchvision
 from torch import nn
 from torch.nn import functional as F
 
-
+# gated fusion module
 class Gated_Fusion(nn.Module):
     def __init__(self, in_channels):
         super().__init__()
