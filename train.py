@@ -31,19 +31,19 @@ def parse_opt():
     parser.add_argument('--data', type=str, default="data/water_nj.yaml",
                         help='dataset yaml path')
     
-    parser.add_argument('--out_dir', type=str, default='',
+    parser.add_argument('--out_dir', type=str, default='D:\\Work\\DLearn\\DLWater\\train_data\\wat_nj_rgb\\out',
                         help='training output path')
      
-    parser.add_argument('--arct', type=str, default='FuseNet',   #'GFUNet', 'MFSegNet'
+    parser.add_argument('--arct', type=str, default='MFSegNet',   #'GFUNet', 'MFSegNet'
                         help='model architecture (options:GFUNet, GFBUNet, FuseNet, v_Fusenet, CMGFNet, MFSegNet')
 
-    parser.add_argument('--epochs', type=int, default=5)
+    parser.add_argument('--epochs', type=int, default=50)
 
     parser.add_argument('--batch_size', type=int, default=4,
                         help='total batch size for all GPUs, -1 for autobatch')
     
     parser.add_argument('--img_sz', '--img', '--img-size', type=int, 
-                        default=128,
+                        default=256,
                         help='train, val image size (pixels)')
     
     parser.add_argument('--lr', type=float, default=0.0001,

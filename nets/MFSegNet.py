@@ -19,17 +19,77 @@ from . import resnet_enc
 #import resnet_enc
 
 
+# Normal convolution block
+class conv_block(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super().__init__()
+        # store the convolution and RELU layers
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, 
+                               stride=1, padding=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(out_channels)
+        self.relu = ReLU()
+        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, 
+                               stride=1, padding=1, bias=False)
+        self.bn2 = nn.BatchNorm2d(out_channels)
+        
+        self.pool = nn.MaxPool2d(2)
+        
+    def forward(self, x):
+        # apply CONV => RELU => CONV block to the inputs and return it
+        out = self.relu(self.bn1(self.conv1(x)))
+        out = self.relu(self.bn2(self.conv2(out)))
+        out = self.pool(out)
+        return out
+    
+    
+# Residual convolution block (adapted from Resnet)
+class res_conv_block(nn.Module):
+    expansion = 1
+    def __init__(self, in_channels, out_channels, stride=1):
+        super(res_conv_block, self).__init__()
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, 
+                               stride=stride, padding=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(out_channels)
+        self.relu = nn.ReLU(inplace=True)
+        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, 
+                               stride=1, padding=1, bias=False)
+        self.bn2 = nn.BatchNorm2d(out_channels)
+        self.downsample = downsample
+
+    def forward(self, x):
+        identity = x
+
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+
+        out = self.conv2(out)
+        out = self.bn2(out)
+
+        if self.downsample is not None:
+            identity = self.downsample(x)
+
+        out += identity
+        out = self.relu(out)
+
+        return out
+    
+    
+    
+    
 # depthwise separable convolution
 class depthwise_separable_conv(nn.Module):
-    def __init__(self, nin, nout, kernel_size=3, padding=1):
+    def __init__(self, in_channels, out_channels, kernel_size=3, padding=1):
         super(depthwise_separable_conv, self).__init__()
-        self.depthwise = nn.Conv2d(nin, nin, kernel_size=kernel_size, padding=padding, groups=nin)
-        self.pointwise = nn.Conv2d(nin, nout, kernel_size=1)
+        self.depthwise = nn.Conv2d(in_channels, in_channels, kernel_size=kernel_size, 
+                                   padding=padding, groups=in_channels)
+        self.pointwise = nn.Conv2d(in_channels, out_channels, kernel_size=1)
 
     def forward(self, x):
         out = self.depthwise(x)
         out = self.pointwise(out)
         return out
+
 
 
 # residual depthwise separable module decoder
@@ -166,14 +226,14 @@ class MFSegNet(nn.Module):
         
         seg = self.avgConv(fused_ft)
         
-        seg = F.interpolate(seg, scale_factor=2)
+        #seg = F.interpolate(seg, scale_factor=2)
         
         return seg
     
     
 
 if __name__ == '__main__':
-    nchns = 12
+    nchns = 3
     mfseg = MFSegNet(img_channels=nchns, aux_channels=1)
 
     img = torch.rand((4, nchns, 256,256))
