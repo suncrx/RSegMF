@@ -14,12 +14,6 @@ from torch.utils.data import DataLoader
 
 import segmentation_models_pytorch as smp
 
-
-#from models.GFBUNet import GFBUNet
-#from models.GFUNet import GFUNet
-#from models.vFuseNet import v_Fusenet
-#from models.CMGFNet import CMGFNet
-
 import nets
 from datasetmm import SegDatasetMM
 from epoch_run import MyTrainEpoch, MyValidEpoch
@@ -34,8 +28,8 @@ def parse_opt():
     parser.add_argument('--out_dir', type=str, default='D:\\Work\\DLearn\\DLWater\\train_data\\wat_nj_rgb\\out',
                         help='training output path')
      
-    parser.add_argument('--arct', type=str, default='MFSegNet',   #'GFUNet', 'MFSegNet'
-                        help='model architecture (options:GFUNet, GFBUNet, FuseNet, v_Fusenet, CMGFNet, MFSegNet')
+    parser.add_argument('--arct', type=str, default='MFSegNet2',   #'GFUNet', 'MFSegNet'
+                        help='model architecture (options:GFUNet, GFBUNet, FuseNet, v_Fusenet, CMGFNet, MFSegNet, MFSegNet2')
 
     parser.add_argument('--epochs', type=int, default=50)
 

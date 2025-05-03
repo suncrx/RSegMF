@@ -14,6 +14,7 @@ from .CMGFNet import CMGFNet
 from .GFUNet import GFUNet
 from .GFBUNet import GFBUNet
 from .MFSegNet import MFSegNet
+from .MFSegNet2 import MFSegNet2
 
 # create the model from the name 'arct' and pretrained_weight_path 
 def create_model(arct, n_classes=1, n_channels=3, pretrained_weight_path=None):
@@ -27,7 +28,11 @@ def create_model(arct, n_classes=1, n_channels=3, pretrained_weight_path=None):
     elif arct.lower()=='gfbunet':
         model = GFBUNet(n_classes=n_classes, retainDim=False)        
     elif arct.lower()=='mfsegnet':
-        model = MFSegNet(n_classes=n_classes)
+        model = MFSegNet(n_classes=n_classes, img_channels=n_channels, 
+                          aux_channels=1)
+    elif arct.lower()=='mfsegnet2':
+        model = MFSegNet2(n_classes=n_classes, img_channels=n_channels, 
+                          aux_channels=1)    
     #model_class = globals()[opt.arct]
     #model = model_class()
         
