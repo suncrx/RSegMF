@@ -231,6 +231,7 @@ class FuseNet(nn.Module):
         print('[INFO] FuseNet model has been created')
         self.initialize_weights()
 
+
     # He Initialization for the linear layers in the classification head
     def initialize_weights(self):
         for m in self.modules():
@@ -240,6 +241,7 @@ class FuseNet(nn.Module):
                 fan_in = size[1]  # number of columns
                 variance = np.sqrt(4.0/(fan_in + fan_out))
                 m.weight.data.normal_(0.0, variance)
+
 
     def forward(self, rgb_inputs, depth_inputs):
         # DEPTH ENCODER

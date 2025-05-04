@@ -39,6 +39,7 @@ class ResNetEnc(ResNet):
         del self.avgpool
         del self.fc
 
+        # input channels 
         self.in_channels = in_channels        
         #modify the first conv layer: the input channels is 3 in the original net,
         #and our input channels can be any number. 

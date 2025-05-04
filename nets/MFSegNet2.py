@@ -10,6 +10,7 @@ multiple-modal fusion segmentation network
 
 """
 
+import numpy as np
 import torch
 from torch import nn
 from torch.nn import ReLU
@@ -178,23 +179,28 @@ class SimpleFusionBlock(nn.Module):
         return self.fuseConv(out)
 
     
-# ------------------------------------------------------------------------    
+# ------------------------------------------------------------------------   
+# multiple-modal data fusion network for segmentation 
 class MFSegNet2(nn.Module):
+    # img_channels: channels of the input image 
+    # aux_channnels: channels of auxillary data 
     def __init__(self, img_channels=3, aux_channels=1, 
                  n_classes=1, pretrained=True):
         super().__init__()
         
+        # class number of segmentation
         self.n_classes = n_classes
         
+        # channels of features in the encoders
         self.feature_channels =  [16, 32, 64, 128, 256, 512]
         
         # image encoders
         channels = [img_channels] + self.feature_channels
-        self.img_enc_blocks = ModuleList([DSConv(channels[i], channels[i + 1]) for i in range(len(channels) - 1)])
+        self.img_enc_blocks = ModuleList([ConvBlock(channels[i], channels[i + 1]) for i in range(len(channels) - 1)])
                         
         # auxiliary data encoders
         channels = [aux_channels] + self.feature_channels
-        self.aux_enc_blocks = ModuleList([DSConv(channels[i], channels[i + 1]) for i in range(len(channels) - 1)])
+        self.aux_enc_blocks = ModuleList([ConvBlock(channels[i], channels[i + 1]) for i in range(len(channels) - 1)])
 
         self.pool = nn.MaxPool2d(2)
         
@@ -219,7 +225,7 @@ class MFSegNet2(nn.Module):
             blocks.append(dec)
         self.aux_dec_blocks = ModuleList(blocks)
         
-        # fusion blocks
+        # fusion blocks for each level of featrues
         blocks = []
         for i in range(len(self.feature_channels)-1):
             in_chs = self.feature_channels[i+1] 
@@ -238,7 +244,12 @@ class MFSegNet2(nn.Module):
         self.avgConv = nn.Conv2d(in_channels=inchns, out_channels=n_classes, 
                                  kernel_size=3, padding=1)
 
+
+        #self.initialize_weights()
+        print('[INFO] MFSegNet2 model has been created')
         
+
+                        
     def forward(self, x, aux):
         nb, _, h, w = x.shape
         
